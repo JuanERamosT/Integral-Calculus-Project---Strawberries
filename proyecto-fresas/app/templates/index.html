@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Volumen de Fresa — Cálculo Integral</title>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;600&display=swap');
+
+    :root {
+      --rojo:    #e63946;
+      --verde:   #2a9d8f;
+      --fondo:   #0a0c10;
+      --panel:   #13161e;
+      --borde:   #1f2433;
+      --texto:   #e0e0e0;
+      --gris:    #8892a4;
+      --acento:  #f4a261;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #0a0c10 0%, #1a0a0e 100%);
+      border-bottom: 1px solid var(--rojo);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .logo {
+      width: 48px; height: 48px;
+      background: var(--rojo);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    header h1 { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: white; }
+    header p  { font-size: 0.78rem; color: var(--gris); }
+
+    /* ── MENÚ TABS ── */
+    .menu {
+      display: flex;
+      gap: 0;
+      background: var(--panel);
+      border-bottom: 1px solid var(--borde);
+      padding: 0 2rem;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--gris);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover  { color: var(--texto); }
+    .tab-btn.active {
+      color: var(--rojo);
+      border-bottom-color: var(--rojo);
+      font-weight: 600;
+    }
+
+    /* ── PANELS ── */
+    .panel { display: none; padding: 2.5rem 2rem; max-width: 960px; margin: 0 auto; }
+    .panel.active { display: block; }
+
+    /* ── TARJETAS ── */
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      padding: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--rojo);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .card h3 { font-size: 1rem; color: white; margin-bottom: 0.5rem; }
+    .card p  { color: var(--gris); font-size: 0.9rem; line-height: 1.7; }
+
+    /* ── INFO GRID ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .info-item {
+      background: #0f1117;
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .info-item .label { font-size: 0.72rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.1em; }
+    .info-item .valor { font-size: 0.95rem; color: white; font-weight: 600; margin-top: 0.3rem; }
+
+    /* ── FÓRMULA ── */
+    .formula-box {
+      background: #0f1117;
+      border-left: 3px solid var(--rojo);
+      border-radius: 0 8px 8px 0;
+      padding: 1.2rem 1.5rem;
+      margin: 1rem 0;
+      font-size: 1.05rem;
+      text-align: center;
+    }
+
+    /* ── INPUTS PANEL 2 ── */
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--gris);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.6rem;
+    }
+    select, input[type="number"] {
+      background: #0f1117;
+      border: 1px solid var(--borde);
+      color: white;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      width: 100%;
+      max-width: 400px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    select:focus, input[type="number"]:focus { border-color: var(--rojo); }
+
+    .slider-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 300px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--borde);
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--rojo);
+      cursor: pointer;
+    }
+    input[type="number"].sync {
+      width: 100px;
+      max-width: 100px;
+    }
+
+    /* ── BOTONES ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin: 0.4rem 0.4rem 0.4rem 0;
+    }
+    .btn-primary { background: var(--rojo); color: white; }
+    .btn-primary:hover { background: #c1121f; transform: translateY(-1px); }
+    .btn-secondary { background: #1f2433; color: var(--texto); border: 1px solid var(--borde); }
+    .btn-secondary:hover { border-color: var(--rojo); color: white; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* ── RESULTADO ── */
+    .resultado-box {
+      background: #0a120f;
+      border: 1px solid var(--verde);
+      border-radius: 10px;
+      padding: 1.2rem 1.5rem;
+      margin-top: 1rem;
+      display: none;
+    }
+    .resultado-box.visible { display: block; }
+    .resultado-box .num {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.5rem;
+      color: var(--verde);
+    }
+    .resultado-box .sub { font-size: 0.8rem; color: var(--gris); margin-top: 0.3rem; }
+
+    /* ── IMAGEN GRÁFICA ── */
+    .grafica-box {
+      margin-top: 1rem;
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+      border: 1px solid var(--borde);
+    }
+    .grafica-box.visible { display: block; }
+    .grafica-box img { width: 100%; display: block; }
+
+    /* ── PASO A PASO ── */
+    .paso {
+      background: #0f1117;
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      padding: 1rem 1.3rem;
+      margin-bottom: 0.8rem;
+    }
+    .paso .num-paso {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--acento);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+    }
+    .paso p { font-size: 0.88rem; color: var(--gris); }
+
+    /* ── MÉTRICAS ── */
+    .metricas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .metrica {
+      background: #0f1117;
+      border: 1px solid var(--borde);
+      border-radius: 10px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .metrica .val {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      color: var(--acento);
+      display: block;
+    }
+    .metrica .etiq { font-size: 0.75rem; color: var(--gris); margin-top: 0.3rem; }
+
+    /* ── LOADER ── */
+    .loader {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid var(--borde);
+      border-top-color: var(--rojo);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🍓</div>
+  <div>
+    <h1>Modelamiento del Volumen de una Fresa</h1>
+    <p>Caso 1 — Modelo 2 &nbsp;|&nbsp; Cálculo Integral I &nbsp;|&nbsp; Universidad de los Llanos</p>
+  </div>
+</header>
+
+<!-- MENÚ -->
+<nav class="menu">
+  <button class="tab-btn active" onclick="cambiarPanel(0)">Panel 1 — Informativo</button>
+  <button class="tab-btn"        onclick="cambiarPanel(1)">Panel 2 — Entradas</button>
+  <button class="tab-btn"        onclick="cambiarPanel(2)">Panel 3 — Simulación</button>
+  <button class="tab-btn"        onclick="cambiarPanel(3)">Panel 4 — Resultados</button>
+</nav>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PANEL 1 — INFORMATIVO                     -->
+<!-- ══════════════════════════════════════════ -->
+<div class="panel active" id="p0">
+
+  <div class="card">
+    <h2>Identificación del Proyecto</h2>
+    <div class="info-grid">
+      <div class="info-item"><div class="label">Estudiantes</div><div class="valor">— — —</div></div>
+      <div class="info-item"><div class="label">Programa</div><div class="valor">Ingeniería de Sistemas</div></div>
+      <div class="info-item"><div class="label">Curso</div><div class="valor">Cálculo Integral I</div></div>
+      <div class="info-item"><div class="label">Caso</div><div class="valor">Caso 1 — Modelo 2</div></div>
+      <div class="info-item"><div class="label">Docente</div><div class="valor">Lauren Genith Isaza</div></div>
+      <div class="info-item"><div class="label">Fecha</div><div class="valor">2026</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Modelo Funcional</h2>
+    <h3>¿Qué hace este sistema?</h3>
+    <p>Este sistema modela matemáticamente la forma de una fresa usando una función parabólica. Al rotar esa función alrededor de su eje, se genera un sólido de revolución cuyo volumen se calcula mediante una integral definida. El resultado permite diseñar empaques óptimos.</p>
+    <div class="formula-box">
+      \[ f(x) = -0.3(x-1)^2 + 2, \quad 0 \leq x \leq 2.5 \]
+    </div>
+    <p>Donde <strong>x</strong> es la longitud axial de la fresa en centímetros y <strong>f(x)</strong> es el radio en cada punto.</p>
+  </div>
+
+  <div class="card">
+    <h2>¿Qué es un Sólido de Revolución?</h2>
+    <p>Un sólido de revolución se obtiene al rotar una curva plana 360° alrededor de un eje. El volumen de dicho sólido se calcula mediante el <strong>Método de los Discos</strong>:</p>
+    <div class="formula-box">
+      \[ V = \pi \int_a^b [f(x)]^2 \, dx \]
+    </div>
+    <p>Cada "rebanada" infinitesimal de la fresa es un disco circular de radio f(x) y espesor dx. Al integrar, se acumula el volumen total.</p>
+  </div>
+
+  <div class="card">
+    <h2>Aplicación de Ingeniería</h2>
+    <p>El volumen calculado permite: <strong>(1)</strong> estimar el espacio real que ocupa cada fresa, <strong>(2)</strong> calcular cuántas fresas caben en una caja, y <strong>(3)</strong> minimizar el material de empaque resolviendo un problema de optimización de área superficial con restricción de volumen.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PANEL 2 — ENTRADAS                        -->
+<!-- ══════════════════════════════════════════ -->
+<div class="panel" id="p1">
+
+  <div class="card">
+    <h2>Configuración del Modelo</h2>
+
+    <div class="form-group">
+      <label>Función del modelo</label>
+      <select id="sel-funcion" onchange="actualizarFormula()">
+        <option value="modelo2" selected>Modelo 2: f(x) = -0.3(x−1)² + 2</option>
+        <option value="modelo1">Modelo 1: f(x) = −0.5x³ + 2x² + 1</option>
+        <option value="modelo3">Modelo 3: f(x) = −0.1x⁴ + x² + 1</option>
+        <option value="modelo4">Modelo 4: f(x) = −0.5x³ + 2x² − x + 1</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Fruta</label>
+      <select id="sel-fruta">
+        <option value="fresa" selected>🍓 Fresa</option>
+        <option value="mora">🫐 Mora</option>
+        <option value="uva">🍇 Uva</option>
+        <option value="cereza">🍒 Cereza</option>
+        <option value="arandano">🫐 Arándano</option>
+        <option value="tomate">🍅 Tomate Cherry</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Cantidad de fresas</label>
+      <div class="slider-row">
+        <input type="range" id="slider-cantidad" min="1" max="10000" value="100"
+               oninput="sincronizar('slider-cantidad','num-cantidad')">
+        <input type="number" id="num-cantidad" class="sync" min="1" max="10000" value="100"
+               oninput="sincronizar('num-cantidad','slider-cantidad')">
+      </div>
+    </div>
+
+    <div class="formula-box" id="formula-display">
+      \[ f(x) = -0.3(x-1)^2 + 2, \quad 0 \leq x \leq 2.5 \]
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PANEL 3 — SIMULACIÓN                      -->
+<!-- ══════════════════════════════════════════ -->
+<div class="panel" id="p2">
+
+  <div class="card">
+    <h2>Graficar la Función</h2>
+    <p>Visualiza el perfil f(x) = −0.3(x−1)² + 2 en el intervalo [0, 2.5].</p>
+    <button class="btn btn-primary" id="btn-grafica" onclick="graficarFuncion()">
+      📈 Graficar f(x)
+    </button>
+    <div class="grafica-box" id="img-funcion"><img id="graf-funcion" src="" alt="Gráfica de f(x)"/></div>
+  </div>
+
+  <div class="card">
+    <h2>Sólido de Revolución 3D</h2>
+    <p>Rota f(x) 360° alrededor del eje x para modelar la forma de la fresa.</p>
+    <button class="btn btn-primary" id="btn-solido" onclick="solido3D()">
+      🍓 Generar Sólido 3D
+    </button>
+    <div class="grafica-box" id="img-solido"><img id="graf-solido" src="" alt="Sólido 3D"/></div>
+  </div>
+
+  <div class="card">
+    <h2>Calcular Volumen</h2>
+    <p>Evaluación numérica de la integral definida con scipy.</p>
+    <button class="btn btn-primary" id="btn-volumen" onclick="calcularVolumen()">
+      🧮 Calcular Volumen
+    </button>
+    <div class="resultado-box" id="res-volumen">
+      <div class="num" id="val-volumen">—</div>
+      <div class="sub" id="sub-volumen">cm³ por fresa</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Resolver Integral — Paso a Paso</h2>
+    <p>Desarrollo simbólico con SymPy.</p>
+    <button class="btn btn-primary" id="btn-integral" onclick="resolverIntegral()">
+      ∫ Resolver Integral
+    </button>
+    <div id="pasos-integral"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PANEL 4 — RESULTADOS                      -->
+<!-- ══════════════════════════════════════════ -->
+<div class="panel" id="p3">
+
+  <div class="card">
+    <h2>Resumen de Resultados</h2>
+    <div class="metricas" id="metricas-resultado">
+      <div class="metrica"><span class="val" id="m-v-unit">—</span><div class="etiq">Volumen unitario (cm³)</div></div>
+      <div class="metrica"><span class="val" id="m-v-total">—</span><div class="etiq">Volumen total (cm³)</div></div>
+      <div class="metrica"><span class="val" id="m-cant">—</span><div class="etiq">Cantidad de fresas</div></div>
+      <div class="metrica"><span class="val" id="m-area">—</span><div class="etiq">Área mínima caja (cm²)</div></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:1.2rem" onclick="calcularTodo()">
+      🚀 Calcular Todo
+    </button>
+  </div>
+
+  <div class="card" id="card-caja" style="display:none">
+    <h2>Diseño de la Caja</h2>
+    <div class="metricas">
+      <div class="metrica"><span class="val" id="m-largo">—</span><div class="etiq">Largo (cm)</div></div>
+      <div class="metrica"><span class="val" id="m-ancho">—</span><div class="etiq">Ancho (cm)</div></div>
+      <div class="metrica"><span class="val" id="m-alto">—</span><div class="etiq">Alto (cm)</div></div>
+    </div>
+    <div class="formula-box" style="margin-top:1rem; text-align:left; font-size:0.88rem;">
+      \[ V_{\text{caja}} = \text{largo} \times \text{ancho} \times \text{alto} \]
+      \[ A_{\min} = 2(lw + lh + wh) \]
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                -->
+<!-- ══════════════════════════════════════════ -->
+<script>
+  // ── Navegación ──
+  function cambiarPanel(i) {
+    document.querySelectorAll('.panel').forEach((p, j) => {
+      p.classList.toggle('active', i === j);
+    });
+    document.querySelectorAll('.tab-btn').forEach((b, j) => {
+      b.classList.toggle('active', i === j);
+    });
+  }
+
+  // ── Sincronizar slider ↔ número ──
+  function sincronizar(origen, destino) {
+    document.getElementById(destino).value = document.getElementById(origen).value;
+  }
+
+  // ── Obtener cantidad actual ──
+  function getCantidad() {
+    return parseInt(document.getElementById('num-cantidad').value) || 100;
+  }
+
+  // ── Loader helper ──
+  function setLoading(btnId, loading, textoOriginal) {
+    const btn = document.getElementById(btnId);
+    if (loading) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loader"></span> Procesando...';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = textoOriginal;
+    }
+  }
+
+  // ── Panel 3: Graficar función ──
+  async function graficarFuncion() {
+    setLoading('btn-grafica', true, '📈 Graficar f(x)');
+    const res = await fetch('/graficar_funcion', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+    const data = await res.json();
+    document.getElementById('graf-funcion').src = 'data:image/png;base64,' + data.imagen;
+    document.getElementById('img-funcion').classList.add('visible');
+    setLoading('btn-grafica', false, '📈 Graficar f(x)');
+  }
+
+  // ── Panel 3: Sólido 3D ──
+  async function solido3D() {
+    setLoading('btn-solido', true, '🍓 Generar Sólido 3D');
+    const res = await fetch('/solido_revolucion', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+    const data = await res.json();
+    document.getElementById('graf-solido').src = 'data:image/png;base64,' + data.imagen;
+    document.getElementById('img-solido').classList.add('visible');
+    setLoading('btn-solido', false, '🍓 Generar Sólido 3D');
+  }
+
+  // ── Panel 3: Calcular volumen ──
+  async function calcularVolumen() {
+    setLoading('btn-volumen', true, '🧮 Calcular Volumen');
+    const cantidad = getCantidad();
+    const res = await fetch('/calcular_volumen', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ cantidad })
+    });
+    const data = await res.json();
+    document.getElementById('val-volumen').textContent = data.volumen_unitario + ' cm³';
+    document.getElementById('sub-volumen').textContent =
+      `Volumen unitario | Total (${cantidad} fresas): ${data.volumen_total} cm³`;
+    document.getElementById('res-volumen').classList.add('visible');
+    // Actualizar panel 4
+    document.getElementById('m-v-unit').textContent  = data.volumen_unitario;
+    document.getElementById('m-v-total').textContent = data.volumen_total;
+    document.getElementById('m-cant').textContent    = cantidad;
+    setLoading('btn-volumen', false, '🧮 Calcular Volumen');
+  }
+
+  // ── Panel 3: Integral simbólica ──
+  async function resolverIntegral() {
+    setLoading('btn-integral', true, '∫ Resolver Integral');
+    const res = await fetch('/resolver_integral', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+    const data = await res.json();
+
+    const pasos = [
+      { n:'PASO 1 — Función del modelo', tex:`\\[ f(x) = ${data.latex_fx} \\]`, desc:'Radio de la fresa en cada punto x.' },
+      { n:'PASO 2 — Elevar al cuadrado', tex:`\\[ [f(x)]^2 = ${data.latex_fx2} \\]`, desc:'Necesario para el método de discos.' },
+      { n:'PASO 3 — Plantear la integral', tex:`\\[ V = \\pi \\int_0^{2.5} [f(x)]^2\\, dx \\]`, desc:'Integral del volumen de revolución.' },
+      { n:'PASO 4 — Antiderivada', tex:`\\[ F(x) = ${data.latex_antiderivada} \\]`, desc:'Primitiva de [f(x)]² respecto a x.' },
+      { n:'PASO 5 — Evaluar en los límites', tex:`\\[ V = \\pi \\cdot F(2.5) - \\pi \\cdot F(0) \\]`, desc:'Teorema Fundamental del Cálculo.' },
+      { n:'PASO 6 — Resultado exacto', tex:`\\[ V = \\pi \\cdot ${data.resultado_exacto} \\approx ${data.resultado_decimal}\\text{ cm}^3 \\]`, desc:'Volumen calculado de una fresa.' },
+    ];
+
+    let html = '';
+    pasos.forEach(p => {
+      html += `<div class="paso">
+        <div class="num-paso">${p.n}</div>
+        <div>${p.tex}</div>
+        <p>${p.desc}</p>
+      </div>`;
+    });
+    document.getElementById('pasos-integral').innerHTML = html;
+    MathJax.typesetPromise();
+    setLoading('btn-integral', false, '∫ Resolver Integral');
+  }
+
+  // ── Panel 4: Calcular todo ──
+  async function calcularTodo() {
+    const cantidad = getCantidad();
+    const res = await fetch('/diseno_caja', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ cantidad })
+    });
+    const data = await res.json();
+    document.getElementById('m-v-unit').textContent  = data.volumen_unitario;
+    document.getElementById('m-v-total').textContent = data.volumen_total;
+    document.getElementById('m-cant').textContent    = cantidad;
+    document.getElementById('m-area').textContent    = data.area_material;
+    document.getElementById('m-largo').textContent   = data.largo;
+    document.getElementById('m-ancho').textContent   = data.ancho;
+    document.getElementById('m-alto').textContent    = data.alto;
+    document.getElementById('card-caja').style.display = 'block';
+    MathJax.typesetPromise();
+  }
+
+  // ── Actualizar fórmula en Panel 2 ──
+  function actualizarFormula() {
+    const formulas = {
+      modelo2: '\\[ f(x) = -0.3(x-1)^2 + 2, \\quad 0 \\leq x \\leq 2.5 \\]',
+      modelo1: '\\[ f(x) = -0.5x^3 + 2x^2 + 1, \\quad 0 \\leq x \\leq 2 \\]',
+      modelo3: '\\[ f(x) = -0.1x^4 + x^2 + 1, \\quad 0 \\leq x \\leq 2 \\]',
+      modelo4: '\\[ f(x) = -0.5x^3 + 2x^2 - x + 1, \\quad 0 \\leq x \\leq 2 \\]',
+    };
+    const sel = document.getElementById('sel-funcion').value;
+    document.getElementById('formula-display').innerHTML = formulas[sel];
+    MathJax.typesetPromise();
+  }
+</script>
+</body>
+</html>
