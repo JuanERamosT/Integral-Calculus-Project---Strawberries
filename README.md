@@ -13,7 +13,7 @@ ToSend/         → Informe final en LaTeX (formato IEEE)
 
 La aplicación permite visualizar la fresa como sólido de revolución generado por la función:
 
-$$f(x) = -0.3(x - 1)^2 + 2$$
+$$f(x) = -0.3(x - 1)^3 + 2$$
 
 ### Ejecución
 
