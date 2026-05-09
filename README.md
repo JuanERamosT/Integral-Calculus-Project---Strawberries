@@ -32,3 +32,6 @@ El informe en formato IEEE se encuentra en `ToSend/informe_proyecto.tex`.
 ## Autores
 
 - Juan E. Ramos T.
+- Luna S. Barahona G.
+- Heiner Alexis.
+  
