@@ -1,0 +1,179 @@
+/**
+ * Estilos propios — Proyecto Fresas (Cálculo Integral)
+ * Se carga DESPUÉS de templatemo-prism-flux.css para sobreescribir donde sea necesario.
+ */
+
+/* ── Scroll suave global ── */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;  /* compensa la altura del header fijo */
+}
+
+/* ── Variables locales (complementan las de la plantilla) ── */
+:root {
+    --bg-panel: #141414;
+    --text-main: #f0f0f0;
+    --text-muted: #a0a0a0;
+    --border:     #2a2a2a;
+}
+
+/* ── Formularios / Panel de Entradas ── */
+.modern-input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    color: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.slider { flex-grow: 1; }
+
+.num-input {
+    width: 100px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    color: #fff;
+    border-radius: 8px;
+    text-align: center;
+    font-family: inherit;
+}
+
+/* ── Botones de Simulación ── */
+.sim-btn {
+    background: var(--bg-panel);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 15px 25px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    width: 100%;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    margin-bottom: 15px;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.sim-btn:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.15);
+}
+
+.sim-btn.active-btn {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
+}
+
+/* ── Resultados de Simulación ── */
+.sim-result {
+    display: none;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.sim-result img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ── Botón Confirmar (Panel Entradas) ── */
+.confirm-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+.confirm-btn:hover {
+    background: var(--accent-cyan);
+    color: #000;
+}
+
+.confirm-btn.confirmed {
+    border-color: #4ade80;
+    color: #4ade80;
+}
+
+/* ── Panel 4: Tarjetas de Resultados ── */
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.res-card {
+    background: var(--bg-panel);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--accent-purple);
+    text-align: center;
+}
+
+.res-val {
+    font-size: 2rem;
+    color: var(--text-main);
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* ── Grid de Simulación ── */
+.sim-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* ── Contenedor de Entradas ── */
+.entradas-box {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--bg-panel);
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--accent-cyan);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* ── Títulos de resultado en simulación ── */
+.sim-result-title {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* ── Mensaje de resultados pendientes ── */
+.pending-msg {
+    text-align: center;
+    margin-top: 15px;
+    color: var(--text-muted);
+}
